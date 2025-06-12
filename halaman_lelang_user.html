@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auctify - Platform Lelang Terpercaya</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .btn-watchlist.active .bi-heart { display: none; }
+        .btn-watchlist.active .bi-heart-fill { display: inline-block; }
+        .btn-watchlist .bi-heart-fill { display: none; }
+        .card-img-top { width: 100%; height: 200px; object-fit: cover; } /* Tinggi gambar disesuaikan sedikit */
+        .card { display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+        .card-body { flex-grow: 1; display: flex; flex-direction: column; }
+        .card-text.mt-auto { margin-top: auto; } /* Pastikan harga & waktu di bawah */
+        .card.border-warning { border-width: 2px !important; box-shadow: 0 0 .5rem rgba(255, 193, 7, .5); }
+        .quick-bid-btn { margin: 2px; }
+        #bidFormSection { display: block; }
+        #bidConfirmationSection { display: none; }
+        .user-bid-status-badge { font-size: 0.75em; margin-left: 8px; }
+        .dropdown-menu-notification { min-width: 300px; max-height: 400px; overflow-y: auto; }
+        .dropdown-menu-notification .dropdown-item { white-space: normal; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .notification-time { font-size: 0.75em; color: #6c757d; }
+        .share-buttons .btn { margin-right: 5px; }
+        .footer-links a { margin-right: 15px; color: #6c757d; text-decoration: none; }
+        .footer-links a:hover { color: #000; }
+        .ratings .bi-star-fill { color: #ffc107; }
+        .ratings .bi-star-half { color: #ffc107; }
+        .ratings .bi-star { color: #e4e5e9; }
+        .product-meta small { display: block; margin-bottom: 0.25rem; } /* Untuk lokasi & dilihat */
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="halaman_lelang_user.html">Auctify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="halaman_lelang_user.html">Lelang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="riwayat_lelang_user.html">Riwayat Lelang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="watchlist.html"><i class="bi bi-bookmark-heart-fill"></i> Watchlist</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown"><i class="bi bi-bell-fill"></i><span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size: 0.6em; margin-top: 0.5rem; margin-left: -0.5rem;">3</span></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-notification" aria-labelledby="notificationDropdown">
+                            <li><h6 class="dropdown-header">Notifikasi</h6></li>
+                            <li><a class="dropdown-item" href="#"><div><strong>Tawaran dikalahkan!</strong>...<div class="notification-time">5m lalu</div></div></a></li>
+                            <li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-center" href="#">Lihat semua notifikasi</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i> User XYZ</a>
+                        <ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="#">Profil</a></li><li><a class="dropdown-item" href="#">Logout</a></li></ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Barang Lelang Populer</h1>
+        <div class="row mb-4">
+            <div class="col-md-4"><div class="input-group"><input type="text" class="form-control" id="searchInput" placeholder="Cari barang lelang..."><button class="btn btn-outline-secondary" type="button" id="searchButton"><i class="bi bi-search"></i></button></div></div>
+            <div class="col-md-4"><select class="form-select" id="filterKategori"><option selected value="">Semua Kategori</option><option value="elektronik">Elektronik</option><option value="fashion">Fashion</option><option value="koleksi">Barang Koleksi</option><option value="otomotif">Otomotif</option><option value="furnitur">Furnitur & Rumah Tangga</option><option value="game">Game & Konsol</option></select></div>
+            <div class="col-md-4"><select class="form-select" id="sortOrder"><option selected value="populer">Urutkan: Populer</option><option value="segera-berakhir">Urutkan: Segera Berakhir</option><option value="terbaru">Urutkan: Terbaru</option><option value="harga-terendah">Urutkan: Harga Terendah</option><option value="harga-tertinggi">Urutkan: Harga Tertinggi</option></select></div>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="daftarLelang">
+            </div>
+    </div>
+
+    <div class="modal fade" id="detailLelangModal" tabindex="-1" aria-labelledby="detailLelangModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="detailLelangModalLabel">Detail Lelang: <span id="modalNamaProduk"></span></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6"><img id="modalGambarProduk" src="" class="img-fluid rounded mb-3" alt="Gambar Produk"></div>
+                        <div class="col-md-6">
+                            <h4 id="modalNamaProdukDeskripsi"></h4>
+                            <div id="modalRatingContainer" class="mb-2"></div>
+                            <p id="modalDeskripsiProduk"></p>
+                            <p><strong>Lokasi Penjual:</strong> <span id="modalLokasiPenjual" class="text-muted"></span></p>
+                            <p><strong>Harga Mulai:</strong> <span id="modalHargaMulai"></span></p>
+                            <p><strong>Harga Saat Ini:</strong> <span id="modalHargaSaatIni" class="text-success fw-bold"></span></p>
+                            <p><strong>Kelipatan Tawaran:</strong> <span id="modalKelipatanBid"></span></p>
+                            <p class="text-danger fw-bold">Sisa Waktu: <span id="modalSisaWaktu"></span></p>
+                            <div class="mt-3 share-buttons"><strong>Bagikan:</strong> <button class="btn btn-outline-primary btn-sm" onclick="shareToSocial('Facebook')"><i class="bi bi-facebook"></i></button> <button class="btn btn-outline-info btn-sm" onclick="shareToSocial('Twitter')"><i class="bi bi-twitter-x"></i></button> <button class="btn btn-outline-success btn-sm" onclick="shareToSocial('WhatsApp')"><i class="bi bi-whatsapp"></i></button> <button class="btn btn-outline-secondary btn-sm" onclick="shareToSocial('Email')"><i class="bi bi-envelope-fill"></i></button></div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="bidFormSection">
+                        <h5>Form Penawaran</h5>
+                        <form id="formTawarInternal">
+                            <input type="hidden" id="lelangIdModal" name="lelang_id">
+                            <div class="mb-3"><label for="jumlahTawaran" class="form-label">Jumlah Tawaran Anda (minimal <span id="modalMinTawaranText">Rp 0</span>)</label><div class="input-group"><span class="input-group-text">Rp</span><input type="number" class="form-control" id="jumlahTawaran" name="jumlah_tawaran" placeholder="Masukkan jumlah tawaran" required></div><div class="form-text">Pastikan tawaran Anda lebih tinggi dari harga saat ini & sesuai kelipatan.</div></div>
+                            <div class="mb-3" id="quickBidButtonsContainer"><label class="form-label d-block">Tawaran Cepat:</label></div>
+                            <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="proxyBidCheck"><label class="form-check-label" for="proxyBidCheck">Aktifkan Penawaran Otomatis (Proxy Bid)</label></div>
+                            <div class="mb-3" id="proxyBidAmountDiv" style="display: none;"><label for="proxyBidAmount" class="form-label">Tawaran Maksimum Anda</label><div class="input-group"><span class="input-group-text">Rp</span><input type="number" class="form-control" id="proxyBidAmount" placeholder="Batas atas tawaran otomatis"></div></div>
+                            <button type="submit" class="btn btn-success w-100"><i class="bi bi-hammer"></i> Lanjut ke Konfirmasi</button>
+                        </form>
+                    </div>
+                    <div id="bidConfirmationSection">
+                        <h5>Konfirmasi Tawaran Anda</h5>
+                        <p>Anda akan menawar untuk item: <strong id="confirmNamaProduk"></strong></p><p>Jumlah Tawaran: <strong id="confirmJumlahTawaran" class="text-success"></strong></p><p>Apakah Anda yakin ingin melanjutkan?</p>
+                        <button type="button" class="btn btn-primary" id="finalSubmitBidButton">Ya, Tawar Sekarang!</button><button type="button" class="btn btn-secondary" id="cancelBidConfirmationButton">Batal/Ubah Tawaran</button>
+                    </div>
+                    <div id="feedbackTawar" class="mt-3"></div><hr>
+                    <h5>Riwayat Penawaran (5 Teratas)</h5>
+                    <ul class="list-group list-group-flush" id="modalRiwayatTawaran"></ul>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="beliSekarangModal" tabindex="-1" aria-labelledby="beliSekarangModalLabel" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="beliSekarangModalLabel">Konfirmasi Pembelian Langsung</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+                <div class="modal-body"><p>Anda akan membeli item: <strong id="beliNamaProduk"></strong>.</p><p>Dengan harga: <strong id="beliHargaProduk" class="text-success"></strong>.</p></div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button type="button" class="btn btn-success" id="konfirmasiBeliBtn">Ya, Beli Sekarang</button></div>
+        </div></div>
+    </div>
+
+    <footer class="bg-light text-lg-start pt-4 pb-2 mt-5">
+        <div class="container">
+            <div class="row footer-links mb-3 text-center text-md-start">
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Tentang Auctify</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Hubungi Kami</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Bantuan & FAQ</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Syarat & Ketentuan</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Kebijakan Privasi</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                    <a href="#" class="me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="me-2"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+            <hr>
+            <p class="mb-0 text-center small">&copy; 2025 Auctify. Semua Hak Dilindungi.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- DATA PRODUK (SIMULASI) ---
+        let produkLelang = [
+            { id: 'iphone15', nama: 'iPhone 15 Pro Max 256GB', kategori: 'elektronik', deskripsi: 'Natural Titanium, baru, garansi resmi. Chip A17 Bionic.', hargaMulai: 20000000, hargaSaatIni: 21500000, kelipatanBid: 100000, sisaWaktuTeks: '0h 10m 05s', sisaWaktuNumerik: 605, gambarCard: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1692845699230', gambarModal: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=1200&hei=630&fmt=jpeg&qlt=95&.v=1692845699230', hargaBeli: 25000000, riwayat: [{user: 'UserX', bid: 21500000}, {user: 'UserY', bid: 21400000}], tags: ['hot', 'segera-berakhir'], userBidStatus: 'winning', lokasiPenjual: 'Jakarta Pusat, DKI Jakarta', ratingBintang: 4.8, jumlahUlasan: 250, jumlahDilihat: 1500 },
+            { id: 'ps5', nama: 'Sony PlayStation 5 Disc Version', kategori: 'game', deskripsi: 'Konsol game generasi terbaru dari Sony. Termasuk 1 DualSense controller. Garansi Resmi Sony Indonesia.', hargaMulai: 7500000, hargaSaatIni: 7800000, kelipatanBid: 100000, sisaWaktuTeks: '1d 05h 30m 00s', sisaWaktuNumerik: 106200, gambarCard: 'https://th.bing.com/th/id/OIP.gsFVMNGoIe7VVwXhkGsi4wAAAA?cb=iwp2&rs=1&pid=ImgDetMain', gambarModal: 'https://th.bing.com/th/id/OIP.gsFVMNGoIe7VVwXhkGsi4wAAAA?cb=iwp2&rs=1&pid=ImgDetMain', hargaBeli: 8500000, riwayat: [{user: 'GamerBoy', bid: 7800000}], tags: ['hot'], userBidStatus: null, lokasiPenjual: 'Bandung, Jawa Barat', ratingBintang: 4.9, jumlahUlasan: 320, jumlahDilihat: 2100 },
+            { id: 'laptopAsusROG', nama: 'Laptop Gaming ASUS ROG Zephyrus G14', kategori: 'elektronik', deskripsi: 'AMD Ryzen 9, RTX 4060, 16GB RAM, 1TB SSD. Layar Nebula QHD 165Hz.', hargaMulai: 22000000, hargaSaatIni: 23500000, kelipatanBid: 250000, sisaWaktuTeks: '3h 45m 20s', sisaWaktuNumerik: 13520, gambarCard: 'https://multimedia.bbycastatic.ca/multimedia/products/1500x1500/152/15264/15264488.jpg', gambarModal: 'https://multimedia.bbycastatic.ca/multimedia/products/1500x1500/152/15264/15264488.jpg', hargaBeli: null, riwayat: [{user: 'GamerPro', bid: 23500000}, {user: 'TechEnth', bid: 23250000}], userBidStatus: null, lokasiPenjual: 'Surabaya, Jawa Timur', ratingBintang: 4.7, jumlahUlasan: 180, jumlahDilihat: 980 },
+            { id: 'sonyAlpha7C', nama: 'Kamera Sony Alpha 7C (Body) Silver', kategori: 'elektronik', deskripsi: 'Full-frame compact, mulus, SC rendah. Cocok untuk vlogging.', hargaMulai: 18000000, hargaSaatIni: 19200000, kelipatanBid: 100000, sisaWaktuTeks: '0h 20m 00s', sisaWaktuNumerik: 1200, gambarCard: 'https://www.startech.com.bd/image/cache/catalog/dslr-camera/sony/alpha-7c/alpha-7c-01-500x500.webp', gambarModal: 'https://www.startech.com.bd/image/cache/catalog/dslr-camera/sony/alpha-7c/alpha-7c-01-500x500.webp', hargaBeli: 20500000, riwayat: [{user: 'VloggerX', bid: 19200000}], tags: ['segera-berakhir'], userBidStatus: 'outbid', lokasiPenjual: 'Yogyakarta, DIY', ratingBintang: 4.6, jumlahUlasan: 95, jumlahDilihat: 750},
+            { id: 'dompetGucci', nama: 'Dompet Gucci Marmont Card Case (Preloved)', kategori: 'fashion', deskripsi: 'Kulit matelassé hitam, hardware GG gold. Kondisi sangat baik, ada box.', hargaMulai: 3500000, hargaSaatIni: 4200000, kelipatanBid: 100000, sisaWaktuTeks: '2d 5h 15m 00s', sisaWaktuNumerik: 191700, gambarCard: 'https://media.gucci.com/style/DarkGray_Center_0_0_800x800/1677524430/443127_DTD1T_1000_001_083_0000_Light-GG-Marmont-card-case.jpg', gambarModal: 'https://media.gucci.com/style/DarkGray_Center_0_0_1200x1200/1677524430/443127_DTD1T_1000_001_083_0000_Light-GG-Marmont-card-case.jpg', hargaBeli: null, riwayat: [{user: 'Fashionista', bid: 4200000}], userBidStatus: null, lokasiPenjual: 'Jakarta Selatan, DKI Jakarta', ratingBintang: 4.9, jumlahUlasan: 75, jumlahDilihat: 550},
+            { id: 'sneakersNikeDunk', nama: 'Nike Dunk Low Retro "Panda"', kategori: 'fashion', deskripsi: 'Size US 10 / EUR 44. Baru, original, box (BNIB). Populer.', hargaMulai: 1800000, hargaSaatIni: 2150000, kelipatanBid: 50000, sisaWaktuTeks: '1d 12h 30m 00s', sisaWaktuNumerik: 131400, gambarCard: 'https://i5.walmartimages.com/asr/0c1cd4f0-66c7-4a4f-86f4-539cc784946d.e5848fd677f536ccbcf5b524cb5f72d3.jpeg', gambarModal: 'https://i5.walmartimages.com/asr/0c1cd4f0-66c7-4a4f-86f4-539cc784946d.e5848fd677f536ccbcf5b524cb5f72d3.jpeg', hargaBeli: 2500000, riwayat: [{user: 'SneakerFan', bid: 2150000}], userBidStatus: 'winning', lokasiPenjual: 'Tangerang, Banten', ratingBintang: 4.8, jumlahUlasan: 450, jumlahDilihat: 3200 },
+            { id: 'perangkoHindiaBelanda', nama: 'Set Perangko Hindia Belanda Era 1930an', kategori: 'koleksi', deskripsi: 'Koleksi 10 perangko langka kondisi baik. Bernilai sejarah tinggi.', hargaMulai: 750000, hargaSaatIni: 950000, kelipatanBid: 25000, sisaWaktuTeks: '5h 02m 10s', sisaWaktuNumerik: 18130, gambarCard: 'https://down-id.img.susercontent.com/file/09e423072813f304a31b22b808188d89', gambarModal: 'https://down-id.img.susercontent.com/file/09e423072813f304a31b22b808188d89', hargaBeli: null, riwayat: [{user: 'FilatelisMania', bid: 950000}], userBidStatus: null, lokasiPenjual: 'Malang, Jawa Timur', ratingBintang: 0, jumlahUlasan: 0, jumlahDilihat: 300}, // Belum ada rating
+            { id: 'actionFigureGundam', nama: 'Action Figure Gundam MG Barbatos', kategori: 'koleksi', deskripsi: 'Master Grade 1/100, MISB. Detail artikulasi tinggi.', hargaMulai: 800000, hargaSaatIni: 950000, kelipatanBid: 50000, sisaWaktuTeks: '3d 08h 00m 00s', sisaWaktuNumerik: 288000, gambarCard: 'https://down-ph.img.susercontent.com/file/267901b863ca0583b010b10b9633e7b8', gambarModal: 'https://down-ph.img.susercontent.com/file/267901b863ca0583b010b10b9633e7b8', hargaBeli: 1200000, riwayat: [{user: 'GunplaBuilder', bid: 950000}], userBidStatus: 'outbid', lokasiPenjual: 'Bekasi, Jawa Barat', ratingBintang: 4.5, jumlahUlasan: 60, jumlahDilihat: 880},
+            { id: 'motorHondaCB', nama: 'Motor Klasik Honda CB100 K2 (Restorasi)', kategori: 'otomotif', deskripsi: 'Tahun 1978, full restorasi, cat baru, mesin ori. Surat lengkap.', hargaMulai: 15000000, hargaSaatIni: 17500000, kelipatanBid: 250000, sisaWaktuTeks: '4d 10h 00m 00s', sisaWaktuNumerik: 381600, gambarCard: 'https://i.pinimg.com/originals/65/dd/a9/65dda9dd0fcbbd85aee94a4e73f4459d.jpg', gambarModal: 'https://i.pinimg.com/originals/65/dd/a9/65dda9dd0fcbbd85aee94a4e73f4459d.jpg', hargaBeli: null, riwayat: [{user: 'ClassicMotor', bid: 17500000}], userBidStatus: null, lokasiPenjual: 'Semarang, Jawa Tengah', ratingBintang: 4.7, jumlahUlasan: 25, jumlahDilihat: 1200},
+            { id: 'sofaChesterfield', nama: 'Sofa Chesterfield Kulit Coklat Tua', kategori: 'furnitur', deskripsi: '3 Seater, kulit asli, kancing khas. Mewah dan klasik. Dimensi 200x90x75 cm.', hargaMulai: 12000000, hargaSaatIni: 13500000, kelipatanBid: 200000, sisaWaktuTeks: '2d 02h 30m', sisaWaktuNumerik: 181800, gambarCard: 'https://th.bing.com/th/id/OIP.Qb5HH5_B7SQfmkYN4MvDFgHaFj?cb=iwp2&rs=1&pid=ImgDetMain', gambarModal: 'https://th.bing.com/th/id/OIP.Qb5HH5_B7SQfmkYN4MvDFgHaFj?cb=iwp2&rs=1&pid=ImgDetMain', hargaBeli: 15000000, riwayat: [{user: 'InteriorLux', bid: 13500000}], userBidStatus: null, lokasiPenjual: 'Denpasar, Bali', ratingBintang: 4.8, jumlahUlasan: 15, jumlahDilihat: 950},
+            { id: 'mejaKerjaScandinavian', nama: 'Meja Kerja Scandinavian Kayu Pinus', kategori: 'furnitur', deskripsi: 'Desain minimalis, laci penyimpanan. Ukuran 100x50x75cm.', hargaMulai: 800000, hargaSaatIni: 950000, kelipatanBid: 50000, sisaWaktuTeks: '1d 18h 00m', sisaWaktuNumerik: 151200, gambarCard: 'https://media.baamboozle.com/uploads/images/493523/1632497501_33241.jpeg', gambarModal: 'https://media.baamboozle.com/uploads/images/493523/1632497501_33241.jpeg', hargaBeli: null, riwayat: [{user: 'WorkFromHome', bid: 950000}], userBidStatus: null, lokasiPenjual: 'Medan, Sumatera Utara', ratingBintang: 4.4, jumlahUlasan: 40, jumlahDilihat: 620},
+            { id: 'lampuMejaLED', nama: 'Lampu Meja Belajar LED Minimalis', kategori: 'furnitur', deskripsi: 'Desain modern, leher fleksibel, 3 tingkat kecerahan. Hemat energi.', hargaMulai: 150000, hargaSaatIni: 180000, kelipatanBid: 10000, sisaWaktuTeks: '0d 18h 30m', sisaWaktuNumerik: 66600, gambarCard: 'https://lzd-img-global.slatic.net/g/p/ae280c5069220e763ab73df83456357f.jpg_720x720q80.jpg', gambarModal: 'https://lzd-img-global.slatic.net/g/p/ae280c5069220e763ab73df83456357f.jpg_720x720q80.jpg', hargaBeli: 250000, riwayat: [{user: 'PelajarTekun', bid: 180000}], tags: ['segera-berakhir'], userBidStatus: 'winning', lokasiPenjual: 'Makassar, Sulawesi Selatan', ratingBintang: 4.6, jumlahUlasan: 120, jumlahDilihat: 1100 }
+        ];
+        
+        // --- VARIABEL GLOBAL & HELPER ---
+        // ... (Sama seperti sebelumnya) ...
+        let currentlyDisplayedProduk = [...produkLelang];
+        let currentModalProdukId = null;
+        var detailLelangModalInstance = null;
+
+        // --- FUNGSI WATCHLIST (localStorage) ---
+        // ... (Sama seperti sebelumnya) ...
+        function getWatchlist() { const watchlist = localStorage.getItem('lelangWatchlist'); return watchlist ? JSON.parse(watchlist) : [];}
+        function addToWatchlist(produkId) { let watchlist = getWatchlist(); if (!watchlist.includes(produkId)) { watchlist.push(produkId); localStorage.setItem('lelangWatchlist', JSON.stringify(watchlist));}}
+        function removeFromWatchlist(produkId) { let watchlist = getWatchlist(); watchlist = watchlist.filter(id => id !== produkId); localStorage.setItem('lelangWatchlist', JSON.stringify(watchlist));}
+        function isProductInWatchlist(produkId) { return getWatchlist().includes(produkId); }
+
+        // --- FUNGSI FORMAT & COUNTDOWN ---
+        // ... (Sama seperti sebelumnya) ...
+        function formatRupiah(angka, prefix = 'Rp ') { if (typeof angka !== 'number' || isNaN(angka)) return prefix + '0'; return prefix + angka.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");}
+        function formatSisaWaktu(totalSeconds) { if (totalSeconds <= 0) return "Waktu Habis!"; const d = Math.floor(totalSeconds / (3600 * 24)); const h = Math.floor(totalSeconds % (3600 * 24) / 3600); const m = Math.floor(totalSeconds % 3600 / 60); const s = Math.floor(totalSeconds % 60); let output = ""; if (d > 0) output += `${d}d `; if (h > 0 || d > 0) output += `${h}h `; output += `${m}m ${s}s`; return output;}
+        
+        setInterval(() => { /* ... (Logika Countdown sama) ... */ 
+            let somethingChanged = false; 
+            produkLelang.forEach(p => {
+                if (p.sisaWaktuNumerik > 0) {
+                    p.sisaWaktuNumerik -= 1;
+                    p.sisaWaktuTeks = formatSisaWaktu(p.sisaWaktuNumerik);
+                    somethingChanged = true;
+                } else if (p.sisaWaktuNumerik <= 0 && p.sisaWaktuTeks !== "Waktu Habis!") {
+                    p.sisaWaktuTeks = "Waktu Habis!";
+                    somethingChanged = true;
+                }
+            });
+            if(somethingChanged){
+                const activeSort = document.getElementById('sortOrder').value;
+                currentlyDisplayedProduk.forEach(prod_in_display => {
+                    const masterProdukData = produkLelang.find(p => p.id === prod_in_display.id);
+                    if (masterProdukData && masterProdukData.sisaWaktuNumerikOriginalForDisplay !== masterProdukData.sisaWaktuNumerik) {
+                        const cardCol = document.querySelector(`.col[data-id="${masterProdukData.id}"]`);
+                        if(cardCol) {
+                            const sisaWaktuEl = cardCol.querySelector('.sisaWaktuDisplay .fw-bold');
+                            if(sisaWaktuEl) sisaWaktuEl.textContent = masterProdukData.sisaWaktuTeks;
+                            const cardDiv = cardCol.querySelector('.card');
+                            if(masterProdukData.sisaWaktuNumerik > 0 && masterProdukData.sisaWaktuNumerik < 7200) { cardDiv.classList.add('border-warning'); } 
+                            else { cardDiv.classList.remove('border-warning'); }
+                            prod_in_display.sisaWaktuNumerikOriginalForDisplay = masterProdukData.sisaWaktuNumerik; 
+                        }
+                    }
+                });
+                if (activeSort === 'segera-berakhir') {
+                     filterAndSortProduk(document.getElementById('searchInput').value.toLowerCase(), document.getElementById('filterKategori').value, activeSort);
+                }
+            }
+        }, 1000);
+
+        // --- FUNGSI BARU: Generate Star Rating ---
+        function generateStarRating(rating, jumlahUlasan) {
+            let starsHTML = '';
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5 ? 1 : 0;
+            const emptyStars = 5 - fullStars - halfStar;
+
+            for (let i = 0; i < fullStars; i++) { starsHTML += '<i class="bi bi-star-fill"></i>'; }
+            if (halfStar) { starsHTML += '<i class="bi bi-star-half"></i>'; }
+            for (let i = 0; i < emptyStars; i++) { starsHTML += '<i class="bi bi-star"></i>'; }
+            
+            if (jumlahUlasan !== null && typeof jumlahUlasan !== 'undefined') {
+                 starsHTML += ` <small class="text-muted">(${jumlahUlasan} ulasan)</small>`;
+            }
+            return `<div class="ratings small mb-1">${starsHTML}</div>`;
+        }
+
+        // --- RENDER PRODUK (dengan update lokasi, rating, dilihat) ---
+        function renderProduk(produkArray) {
+            const daftarLelangContainer = document.getElementById('daftarLelang');
+            daftarLelangContainer.innerHTML = '';
+            if (produkArray.length === 0) {
+                daftarLelangContainer.innerHTML = '<p class="text-center col-12">Tidak ada produk yang sesuai.</p>';
+                return;
+            }
+            produkArray.forEach(produk => {
+                if (typeof produk.sisaWaktuNumerikOriginalForDisplay === 'undefined') {
+                    produk.sisaWaktuNumerikOriginalForDisplay = produk.sisaWaktuNumerik; 
+                }
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.dataset.kategori = produk.kategori;
+                col.dataset.id = produk.id; 
+                let cardClasses = 'card h-100 shadow-sm';
+                if (produk.sisaWaktuNumerik > 0 && produk.sisaWaktuNumerik < (3600 * 2)) { 
+                     cardClasses += ' border-warning';
+                }
+                let beliSekarangButtonHTML = '';
+                if (produk.hargaBeli && produk.sisaWaktuNumerik > 0) {
+                    beliSekarangButtonHTML = `<button type="button" class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#beliSekarangModal" data-id="${produk.id}" data-harga-beli="${produk.hargaBeli}">Beli Sekarang ${formatRupiah(produk.hargaBeli, '')}</button>`;
+                }
+                let badgeHTML = '';
+                if (produk.tags && produk.tags.includes('hot')) {
+                    badgeHTML = '<span class="badge bg-danger position-absolute top-0 start-0 m-2">Hot Item!</span>';
+                } else if (produk.sisaWaktuNumerik > 0 && produk.sisaWaktuNumerik < 7200 && !(produk.tags?.includes('hot'))) { 
+                     badgeHTML = '<span class="badge bg-warning text-dark position-absolute top-0 start-0 m-2">Segera Berakhir!</span>';
+                }
+                let userBidStatusHTML = '';
+                if (produk.userBidStatus === 'winning') {
+                    userBidStatusHTML = '<span class="badge bg-success user-bid-status-badge"><i class="bi bi-check-circle-fill"></i> Tawaran Tertinggi</span>';
+                } else if (produk.userBidStatus === 'outbid') {
+                    userBidStatusHTML = '<span class="badge bg-danger user-bid-status-badge"><i class="bi bi-exclamation-triangle-fill"></i> Anda Kalah Tawaran</span>';
+                }
+                const isInWatchlist = isProductInWatchlist(produk.id);
+                const ratingHTML = (typeof produk.ratingBintang !== 'undefined' && produk.ratingBintang > 0) ? generateStarRating(produk.ratingBintang, produk.jumlahUlasan) : '<div class="ratings small mb-1"><small class="text-muted">Belum ada ulasan</small></div>';
+
+                col.innerHTML = `
+                    <div class="${cardClasses}">
+                        <img src="${produk.gambarCard || 'https://via.placeholder.com/300x220.png?text=Gambar+Tidak+Tersedia'}" class="card-img-top" alt="${produk.nama}">
+                        <button class="btn btn-outline-danger btn-sm position-absolute top-0 end-0 m-2 btn-watchlist ${isInWatchlist ? 'active' : ''}" title="Tambahkan ke Watchlist" data-produk-id="${produk.id}">
+                            <i class="bi bi-heart"></i><i class="bi bi-heart-fill"></i>
+                        </button>
+                        ${badgeHTML}
+                        <div class="card-body">
+                            <h5 class="card-title">${produk.nama} ${userBidStatusHTML}</h5>
+                            ${ratingHTML} 
+                            <p class="card-text small">${produk.deskripsi.substring(0, 60)}...</p>
+                            <div class="product-meta mt-auto"> <small class="text-muted"><i class="bi bi-geo-alt-fill"></i> ${produk.lokasiPenjual || 'Tidak diketahui'}</small>
+                                <small class="text-muted"><i class="bi bi-eye-fill"></i> ${produk.jumlahDilihat || 0} dilihat</small>
+                                <p class="card-text mt-1"><strong>Harga Mulai:</strong> <span class="text-secondary">${formatRupiah(produk.hargaMulai)}</span></p>
+                                <p class="card-text"><strong>Harga Saat Ini:</strong> <span class="text-success fw-bold">${formatRupiah(produk.hargaSaatIni)}</span></p>
+                                <p class="card-text"><small class="text-muted sisaWaktuDisplay">Sisa Waktu: <span class="text-danger fw-bold">${produk.sisaWaktuTeks}</span></small></p>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <button type="button" class="btn btn-primary w-100 mb-1" data-bs-toggle="modal" data-bs-target="#detailLelangModal" data-id="${produk.id}">
+                                Lihat & Tawar
+                            </button>
+                            ${beliSekarangButtonHTML}
+                        </div>
+                    </div>
+                `;
+                daftarLelangContainer.appendChild(col);
+            });
+            attachWatchlistListeners();
+        }
+        
+        // --- MODAL & PENAWARAN LOGIC ---
+        const detailLelangModalEl = document.getElementById('detailLelangModal');
+        const bidFormSection = document.getElementById('bidFormSection');
+        // ... (Sisa JavaScript sama seperti sebelumnya, pastikan fungsi modal dan lainnya sudah benar)
+        const bidConfirmationSection = document.getElementById('bidConfirmationSection');
+        const jumlahTawaranInput = document.getElementById('jumlahTawaran');
+
+        if (detailLelangModalEl) {
+            detailLelangModalInstance = new bootstrap.Modal(detailLelangModalEl); 
+            detailLelangModalEl.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget; 
+                let produkIdToShow = currentModalProdukId; 
+                if (button && button.getAttribute('data-id')) { 
+                    produkIdToShow = button.getAttribute('data-id');
+                    currentModalProdukId = produkIdToShow; 
+                }
+                const produk = produkLelang.find(p => p.id === produkIdToShow);
+                bidFormSection.style.display = 'block'; 
+                bidConfirmationSection.style.display = 'none'; 
+                document.getElementById('feedbackTawar').innerHTML = ''; 
+                if (produk) {
+                    document.getElementById('modalNamaProduk').textContent = produk.nama;
+                    document.getElementById('modalNamaProdukDeskripsi').textContent = produk.nama; 
+                    document.getElementById('modalGambarProduk').src = produk.gambarModal || 'https://via.placeholder.com/600x400.png?text=Gambar+Detail';
+                    document.getElementById('modalDeskripsiProduk').textContent = produk.deskripsi;
+                    document.getElementById('modalHargaMulai').textContent = formatRupiah(produk.hargaMulai);
+                    document.getElementById('modalHargaSaatIni').textContent = formatRupiah(produk.hargaSaatIni);
+                    document.getElementById('modalKelipatanBid').textContent = formatRupiah(produk.kelipatanBid);
+                    document.getElementById('modalSisaWaktu').textContent = produk.sisaWaktuTeks;
+                    // Tampilkan rating & lokasi di modal
+                    document.getElementById('modalRatingContainer').innerHTML = (typeof produk.ratingBintang !== 'undefined' && produk.ratingBintang > 0) ? generateStarRating(produk.ratingBintang, produk.jumlahUlasan) : '<small class="text-muted">Belum ada ulasan</small>';
+                    document.getElementById('modalLokasiPenjual').textContent = produk.lokasiPenjual || 'Tidak diketahui';
+
+                    const minTawaran = produk.hargaSaatIni + produk.kelipatanBid;
+                    document.getElementById('modalMinTawaranText').textContent = formatRupiah(minTawaran);
+                    jumlahTawaranInput.min = minTawaran;
+                    jumlahTawaranInput.value = ''; 
+                    jumlahTawaranInput.placeholder = formatRupiah(minTawaran, '');
+                    const quickBidContainer = document.getElementById('quickBidButtonsContainer');
+                    quickBidContainer.innerHTML = '<label class="form-label d-block">Tawaran Cepat:</label>'; 
+                    const increments = [1, 2, 5]; 
+                    increments.forEach(inc => {
+                        const bidAmount = produk.hargaSaatIni + (produk.kelipatanBid * inc);
+                        if (bidAmount > produk.hargaSaatIni && produk.sisaWaktuNumerik > 0) {
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.className = 'btn btn-outline-primary btn-sm quick-bid-btn';
+                            btn.textContent = `+ ${formatRupiah(produk.kelipatanBid * inc, '')}`;
+                            btn.dataset.bidAmount = bidAmount;
+                            btn.onclick = () => { jumlahTawaranInput.value = bidAmount; };
+                            quickBidContainer.appendChild(btn);
+                        }
+                    });
+                    if (produk.sisaWaktuNumerik > 0) {
+                        const nextMinBidBtn = document.createElement('button');
+                        nextMinBidBtn.type = 'button';
+                        nextMinBidBtn.className = 'btn btn-outline-info btn-sm quick-bid-btn';
+                        nextMinBidBtn.textContent = formatRupiah(minTawaran, '');
+                        nextMinBidBtn.dataset.bidAmount = minTawaran;
+                        nextMinBidBtn.onclick = () => { jumlahTawaranInput.value = minTawaran; };
+                        quickBidContainer.appendChild(nextMinBidBtn);
+                    } else {
+                         quickBidContainer.innerHTML += '<p class="text-muted small">Lelang telah berakhir.</p>';
+                    }
+                    const riwayatList = document.getElementById('modalRiwayatTawaran');
+                    riwayatList.innerHTML = '';
+                    if (produk.riwayat && produk.riwayat.length > 0) {
+                        produk.riwayat.slice(0, 5).forEach(r => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                            li.innerHTML = `${r.user} <span class="badge bg-info rounded-pill">${formatRupiah(r.bid)}</span>`;
+                            riwayatList.appendChild(li);
+                        });
+                    } else {
+                        riwayatList.innerHTML = '<li class="list-group-item">Belum ada tawaran.</li>';
+                    }
+                    const formElementsToDisable = ['jumlahTawaran', 'proxyBidCheck', 'proxyBidAmount'];
+                    const submitButtonInternal = formTawarInternal.querySelector('button[type="submit"]');
+                    if (produk.sisaWaktuNumerik <= 0) {
+                        formElementsToDisable.forEach(id => document.getElementById(id).disabled = true);
+                        if(submitButtonInternal) submitButtonInternal.disabled = true;
+                        document.getElementById('feedbackTawar').innerHTML = '<div class="alert alert-warning">Lelang untuk item ini telah berakhir.</div>';
+                    } else {
+                        formElementsToDisable.forEach(id => document.getElementById(id).disabled = false);
+                        if(submitButtonInternal) submitButtonInternal.disabled = false;
+                    }
+                }
+            });
+        }
+        
+        const formTawarInternal = document.getElementById('formTawarInternal');
+        if (formTawarInternal) { /* ... (sama) ... */ 
+             formTawarInternal.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const produk = produkLelang.find(p => p.id === currentModalProdukId);
+                if (produk.sisaWaktuNumerik <=0) return;
+                const tawaranPengguna = parseFloat(jumlahTawaranInput.value);
+                const minTawaranValid = produk.hargaSaatIni + produk.kelipatanBid;
+                if (isNaN(tawaranPengguna) || tawaranPengguna < minTawaranValid) {
+                    document.getElementById('feedbackTawar').innerHTML = `<div class="alert alert-danger">Jumlah tawaran minimal adalah ${formatRupiah(minTawaranValid)}.</div>`;
+                    return;
+                }
+                document.getElementById('confirmNamaProduk').textContent = produk.nama;
+                document.getElementById('confirmJumlahTawaran').textContent = formatRupiah(tawaranPengguna);
+                bidFormSection.style.display = 'none';
+                bidConfirmationSection.style.display = 'block';
+                document.getElementById('feedbackTawar').innerHTML = ''; 
+            });
+        }
+        document.getElementById('cancelBidConfirmationButton').addEventListener('click', () => { /* ... (sama) ... */ 
+            bidFormSection.style.display = 'block';
+            bidConfirmationSection.style.display = 'none';
+        });
+        document.getElementById('finalSubmitBidButton').addEventListener('click', () => { /* ... (sama) ... */ 
+            const produk = produkLelang.find(p => p.id === currentModalProdukId);
+            if (produk.sisaWaktuNumerik <=0) {
+                document.getElementById('feedbackTawar').innerHTML = '<div class="alert alert-warning">Tidak bisa menawar, lelang telah berakhir.</div>';
+                bidFormSection.style.display = 'block'; 
+                bidConfirmationSection.style.display = 'none';
+                return;
+            }
+            const tawaranPengguna = parseFloat(jumlahTawaranInput.value); 
+            const feedbackDiv = document.getElementById('feedbackTawar');
+            const isProxy = document.getElementById('proxyBidCheck').checked;
+            const proxyAmount = parseFloat(document.getElementById('proxyBidAmount').value);
+            produk.hargaSaatIni = tawaranPengguna;
+            produk.riwayat.unshift({ user: 'User XYZ (Anda)', bid: tawaranPengguna }); 
+            produk.userBidStatus = 'winning'; 
+            document.getElementById('proxyBidCheck').checked = false;
+            document.getElementById('proxyBidAmountDiv').style.display = 'none';
+            document.getElementById('proxyBidAmount').value = '';
+            feedbackDiv.innerHTML = `<div class="alert alert-success">Tawaran Anda sebesar ${formatRupiah(tawaranPengguna)} ${isProxy && !isNaN(proxyAmount) ? `(proxy maks ${formatRupiah(proxyAmount)})` : ''} telah diterima!</div>`;
+            document.getElementById('modalHargaSaatIni').textContent = formatRupiah(produk.hargaSaatIni);
+            const minTawaranBaru = produk.hargaSaatIni + produk.kelipatanBid;
+            document.getElementById('modalMinTawaranText').textContent = formatRupiah(minTawaranBaru);
+            jumlahTawaranInput.min = minTawaranBaru;
+            jumlahTawaranInput.placeholder = formatRupiah(minTawaranBaru, '');
+            jumlahTawaranInput.value = '';
+            const riwayatList = document.getElementById('modalRiwayatTawaran');
+            riwayatList.innerHTML = '';
+            produk.riwayat.slice(0, 5).forEach(r => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `${r.user} <span class="badge ${r.user.includes('Anda') ? 'bg-success' : 'bg-info'} rounded-pill">${formatRupiah(r.bid)}</span>`;
+                riwayatList.appendChild(li);
+            });
+            bidFormSection.style.display = 'block';
+            bidConfirmationSection.style.display = 'none';
+            updateSpecificProductCard(currentModalProdukId);
+        });
+        function updateSpecificProductCard(productId) { /* ... (sama) ... */ 
+            const produkData = produkLelang.find(p => p.id === productId);
+            if (!produkData) return;
+            const cardCol = document.querySelector(`.col[data-id="${productId}"]`);
+            if (!cardCol) return;
+            const hargaSaatIniEl = cardCol.querySelector('.card-text .text-success.fw-bold');
+            if(hargaSaatIniEl) hargaSaatIniEl.textContent = formatRupiah(produkData.hargaSaatIni);
+            const sisaWaktuEl = cardCol.querySelector('.sisaWaktuDisplay .fw-bold');
+            if(sisaWaktuEl) sisaWaktuEl.textContent = produkData.sisaWaktuTeks;
+            let userBidStatusHTML = '';
+            if (produkData.userBidStatus === 'winning') {
+                userBidStatusHTML = '<span class="badge bg-success user-bid-status-badge"><i class="bi bi-check-circle-fill"></i> Tawaran Tertinggi</span>';
+            } else if (produkData.userBidStatus === 'outbid') {
+                userBidStatusHTML = '<span class="badge bg-danger user-bid-status-badge"><i class="bi bi-exclamation-triangle-fill"></i> Anda Kalah Tawaran</span>';
+            }
+            const cardTitleEl = cardCol.querySelector('.card-title');
+            const oldBadge = cardTitleEl.querySelector('.user-bid-status-badge');
+            if(oldBadge) oldBadge.remove();
+            cardTitleEl.insertAdjacentHTML('beforeend', userBidStatusHTML); 
+            const cardDiv = cardCol.querySelector('.card');
+            if (produkData.sisaWaktuNumerik > 0 && produkData.sisaWaktuNumerik < 7200) {
+                cardDiv.classList.add('border-warning');
+            } else {
+                cardDiv.classList.remove('border-warning');
+            }
+        }
+        
+        // --- FITUR LAINNYA (BELI SEKARANG, WATCHLIST, FILTER/SORT) ---
+        const beliSekarangModalEl = document.getElementById('beliSekarangModal');
+        if (beliSekarangModalEl) { /* ... (sama) ... */ 
+             beliSekarangModalEl.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const produkId = button.getAttribute('data-id');
+                const hargaBeli = button.getAttribute('data-harga-beli');
+                const produk = produkLelang.find(p => p.id === produkId);
+                if (produk && hargaBeli) {
+                    document.getElementById('beliNamaProduk').textContent = produk.nama;
+                    document.getElementById('beliHargaProduk').textContent = formatRupiah(parseInt(hargaBeli));
+                    document.getElementById('konfirmasiBeliBtn').dataset.produkId = produkId;
+                }
+            });
+        }
+        const konfirmasiBeliBtn = document.getElementById('konfirmasiBeliBtn');
+        if (konfirmasiBeliBtn) { /* ... (sama) ... */ 
+            konfirmasiBeliBtn.addEventListener('click', function() {
+                const produkId = this.dataset.produkId;
+                const produk = produkLelang.find(p => p.id === produkId);
+                if (produk && produk.sisaWaktuNumerik <= 0 && produk.userBidStatus !== 'purchased') {
+                    alert('Maaf, lelang untuk item ini telah berakhir atau sudah terjual. Opsi "Beli Sekarang" tidak lagi tersedia.');
+                    bootstrap.Modal.getInstance(beliSekarangModalEl).hide();
+                    return;
+                }
+                alert(`Pembelian produk ${produkId} dikonfirmasi (simulasi). Halaman akan dialihkan ke pembayaran.`);
+                if(produk) {
+                    produk.sisaWaktuNumerik = 0;
+                    produk.sisaWaktuTeks = "Lelang Selesai (Terjual)";
+                    produk.hargaSaatIni = parseInt(this.closest('.modal-content').querySelector('#beliHargaProduk').textContent.replace(/[^0-9]/g, ''));
+                    produk.userBidStatus = 'purchased'; 
+                    updateSpecificProductCard(produkId);
+                }
+                bootstrap.Modal.getInstance(beliSekarangModalEl).hide();
+            });
+        }
+        function attachWatchlistListeners() { /* ... (sama) ... */ 
+            document.querySelectorAll('.btn-watchlist').forEach(button => {
+                const newButton = button.cloneNode(true);
+                button.parentNode.replaceChild(newButton, button);
+                const produkId = newButton.dataset.produkId;
+                if (isProductInWatchlist(produkId)) { newButton.classList.add('active'); } 
+                else { newButton.classList.remove('active'); }
+                newButton.addEventListener('click', function(e) {
+                    e.preventDefault(); this.classList.toggle('active');
+                    if (this.classList.contains('active')) { addToWatchlist(produkId); } 
+                    else { removeFromWatchlist(produkId); }
+                });
+            });
+        }
+        function filterAndSortProduk(searchTerm = '', kategori = '', sortOrder = 'populer') { /* ... (sama) ... */ 
+            let filtered = produkLelang.filter(p => {
+                const matchNama = p.nama.toLowerCase().includes(searchTerm);
+                const matchKategori = kategori === '' || p.kategori === kategori;
+                return matchNama && matchKategori;
+            });
+            switch (sortOrder) {
+                case 'segera-berakhir': filtered.sort((a, b) => { if (a.sisaWaktuNumerik <= 0 && b.sisaWaktuNumerik > 0) return 1; if (a.sisaWaktuNumerik > 0 && b.sisaWaktuNumerik <= 0) return -1; if (a.sisaWaktuNumerik <= 0 && b.sisaWaktuNumerik <= 0) return 0; return a.sisaWaktuNumerik - b.sisaWaktuNumerik; }); break;
+                case 'terbaru': filtered.sort((a,b) => { if(a.id < b.id) return 1; if(a.id > b.id) return -1; return 0;}); break;
+                case 'harga-terendah': filtered.sort((a, b) => a.hargaSaatIni - b.hargaSaatIni); break;
+                case 'harga-tertinggi': filtered.sort((a, b) => b.hargaSaatIni - a.hargaSaatIni); break;
+                case 'populer': default: filtered.sort((a,b) => (b.riwayat?.length || 0) - (a.riwayat?.length || 0) || (b.tags?.includes('hot') ? 1 : 0) - (a.tags?.includes('hot') ? 1 : 0) ); break;
+            }
+            currentlyDisplayedProduk = filtered; renderProduk(currentlyDisplayedProduk);
+        }
+        document.getElementById('searchInput')?.addEventListener('input', (e) => { filterAndSortProduk(e.target.value.toLowerCase(), document.getElementById('filterKategori').value, document.getElementById('sortOrder').value); });
+        document.getElementById('filterKategori')?.addEventListener('change', (e) => { filterAndSortProduk(document.getElementById('searchInput').value.toLowerCase(), e.target.value, document.getElementById('sortOrder').value); });
+        document.getElementById('sortOrder')?.addEventListener('change', (e) => { filterAndSortProduk(document.getElementById('searchInput').value.toLowerCase(), document.getElementById('filterKategori').value, e.target.value); });
+        function checkUrlHashForProduct() { /* ... (sama) ... */ 
+            if (window.location.hash && window.location.hash.length > 1) {
+                const hashProductId = window.location.hash.substring(1); 
+                const produkToOpen = produkLelang.find(p => p.id === hashProductId);
+                if (produkToOpen) {
+                    currentModalProdukId = hashProductId; 
+                    if (detailLelangModalInstance) {
+                        const tempButton = document.createElement('button'); 
+                        tempButton.setAttribute('data-bs-toggle', 'modal');
+                        tempButton.setAttribute('data-bs-target', '#detailLelangModal');
+                        tempButton.setAttribute('data-id', hashProductId); 
+                        detailLelangModalInstance.show(tempButton); 
+                    }
+                }
+                history.pushState("", document.title, window.location.pathname + window.location.search);
+            }
+        }
+        function shareToSocial(platform) { /* ... (sama) ... */ 
+             const produk = produkLelang.find(p => p.id === currentModalProdukId);
+            if (produk) {
+                const shareText = `Lihat lelang menarik: ${produk.nama} di Auctify! Harga saat ini ${formatRupiah(produk.hargaSaatIni)}.`;
+                const pageUrl = window.location.href.split('#')[0] + '#' + produk.id; 
+                let shareUrl = '';
+                switch (platform) {
+                    case 'Facebook': shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}&quote=${encodeURIComponent(shareText)}`; break;
+                    case 'Twitter': shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}&text=${encodeURIComponent(shareText)}`; break;
+                    case 'WhatsApp': shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + pageUrl)}`; break;
+                    case 'Email': shareUrl = `mailto:?subject=Lihat Lelang Menarik: ${produk.nama}&body=${encodeURIComponent(shareText + '\n\nLink: ' + pageUrl)}`; window.location.href = shareUrl; return; 
+                }
+                if (shareUrl) { window.open(shareUrl, '_blank', 'width=600,height=400'); } 
+                else { alert(`Berbagi ke ${platform} (simulasi)... \n${shareText} \nURL: ${pageUrl}`); }
+            } else { alert('Tidak ada produk dipilih untuk dibagikan.'); }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+             produkLelang.forEach(p => { p.sisaWaktuNumerikOriginalForDisplay = p.sisaWaktuNumerik; });
+            filterAndSortProduk(); 
+            checkUrlHashForProduct(); 
+        });
+    </script>
+</body>
+</html>

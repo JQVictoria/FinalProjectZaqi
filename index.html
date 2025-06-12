@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manajemen Lelang</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/style.css"> </head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <div class="bg-dark border-end" id="sidebar-wrapper" style="width: 280px;">
+            <div class="sidebar-heading border-bottom bg-dark text-light p-3">Admin Auctify</div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark p-3"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+                <a href="index.html" class="list-group-item list-group-item-action list-group-item-light active p-3"><i class="bi bi-hammer me-2"></i> Manajemen Lelang</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark p-3"><i class="bi bi-patch-check-fill me-2"></i> Verifikasi Penawaran</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark p-3"><i class="bi bi-file-earmark-bar-graph-fill me-2"></i> Laporan Lelang</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark p-3"><i class="bi bi-credit-card-fill me-2"></i> Manajemen Pembayaran</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark p-3"><i class="bi bi-people-fill me-2"></i> Manajemen User</a>
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark p-3"><i class="bi bi-box-arrow-left me-2"></i> Logout</a>
+            </div>
+        </div>
+        <div id="page-content-wrapper" class="flex-grow-1">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="sidebarToggle"><i class="bi bi-list"></i></button> <div class="ms-auto">Admin Panel</div>
+                </div>
+            </nav>
+
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3">Manajemen Lelang</h1>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#tambahLelangModal">
+                        <i class="bi bi-plus-circle-fill me-2"></i> Tambah Lelang Baru
+                    </button>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        Daftar Lelang Aktif dan Selesai
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama Produk</th>
+                                        <th>Harga Awal</th>
+                                        <th>Harga Tertinggi Saat Ini</th>
+                                        <th>Waktu Mulai</th>
+                                        <th>Waktu Selesai</th>
+                                        <th>Status</th>
+                                        <th>Pemenang</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>L001</td>
+                                        <td>Smartphone Canggih X100</td>
+                                        <td>Rp 5.000.000</td>
+                                        <td>Rp 5.500.000</td>
+                                        <td>18 Mei 2025, 10:00</td>
+                                        <td>25 Mei 2025, 22:00</td>
+                                        <td><span class="badge bg-primary">Aktif</span></td>
+                                        <td>-</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" title="Lihat Penawaran"><i class="bi bi-eye-fill"></i></button>
+                                            <button class="btn btn-sm btn-warning" title="Edit Lelang" data-bs-toggle="modal" data-bs-target="#editLelangModal" data-id="L001"><i class="bi bi-pencil-fill"></i></button>
+                                            <button class="btn btn-sm btn-danger" title="Hapus Lelang"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>L002</td>
+                                        <td>Kamera Mirrorless Pro Z</td>
+                                        <td>Rp 7.500.000</td>
+                                        <td>Rp 8.200.000</td>
+                                        <td>10 Mei 2025, 09:00</td>
+                                        <td>15 Mei 2025, 21:00</td>
+                                        <td><span class="badge bg-success">Selesai</span></td>
+                                        <td>UserXYZ</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info" title="Lihat Penawaran"><i class="bi bi-eye-fill"></i></button>
+                                            <button class="btn btn-sm btn-secondary disabled" title="Edit Lelang"><i class="bi bi-pencil-fill"></i></button>
+                                            <button class="btn btn-sm btn-secondary disabled" title="Hapus Lelang"><i class="bi bi-trash-fill"></i></button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    <div class="modal fade" id="tambahLelangModal" tabindex="-1" aria-labelledby="tambahLelangModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tambahLelangModalLabel">Form Tambah Lelang Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formTambahLelang">
+                        <div class="mb-3">
+                            <label for="namaProduk" class="form-label">Nama Produk</label>
+                            <input type="text" class="form-control" id="namaProduk" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="deskripsiProduk" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="deskripsiProduk" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="hargaAwal" class="form-label">Harga Awal (Rp)</label>
+                                <input type="number" class="form-control" id="hargaAwal" step="1000" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="kelipatanBid" class="form-label">Kelipatan Bid (Rp)</label>
+                                <input type="number" class="form-control" id="kelipatanBid" step="1000" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="waktuMulai" class="form-label">Waktu Mulai Lelang</label>
+                                <input type="datetime-local" class="form-control" id="waktuMulai" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="waktuSelesai" class="form-label">Waktu Selesai Lelang</label>
+                                <input type="datetime-local" class="form-control" id="waktuSelesai" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gambarProduk" class="form-label">Gambar Produk (Maks. 3)</label>
+                            <input type="file" class="form-control" id="gambarProduk" multiple accept="image/*">
+                        </div>
+                         <div class="mb-3">
+                            <label for="kategoriProduk" class="form-label">Kategori</label>
+                            <select class="form-select" id="kategoriProduk" required>
+                                <option selected disabled value="">Pilih Kategori...</option>
+                                <option value="elektronik">Elektronik</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="otomotif">Otomotif</option>
+                                <option value="koleksi">Barang Koleksi</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" form="formTambahLelang">Simpan Lelang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editLelangModal" tabindex="-1" aria-labelledby="editLelangModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLelangModalLabel">Form Edit Lelang</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formEditLelang">
+                        <input type="hidden" id="editLelangId"> <div class="mb-3">
+                            <label for="editNamaProduk" class="form-label">Nama Produk</label>
+                            <input type="text" class="form-control" id="editNamaProduk" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDeskripsiProduk" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="editDeskripsiProduk" rows="3" required></textarea>
+                        </div>
+                         <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editHargaAwal" class="form-label">Harga Awal (Rp)</label>
+                                <input type="number" class="form-control" id="editHargaAwal" step="1000" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editKelipatanBid" class="form-label">Kelipatan Bid (Rp)</label>
+                                <input type="number" class="form-control" id="editKelipatanBid" step="1000" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editWaktuMulai" class="form-label">Waktu Mulai Lelang</label>
+                                <input type="datetime-local" class="form-control" id="editWaktuMulai" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editWaktuSelesai" class="form-label">Waktu Selesai Lelang</label>
+                                <input type="datetime-local" class="form-control" id="editWaktuSelesai" required>
+                            </div>
+                        </div>
+                         <div class="mb-3">
+                            <p>Gambar Saat Ini: <span id="currentImages">Tidak ada / nama_gambar.jpg</span></p>
+                            <label for="editGambarProduk" class="form-label">Ganti Gambar Produk (Opsional)</label>
+                            <input type="file" class="form-control" id="editGambarProduk" multiple accept="image/*">
+                        </div>
+                         <div class="mb-3">
+                            <label for="editKategoriProduk" class="form-label">Kategori</label>
+                            <select class="form-select" id="editKategoriProduk" required>
+                                <option selected disabled value="">Pilih Kategori...</option>
+                                <option value="elektronik">Elektronik</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="otomotif">Otomotif</option>
+                                <option value="koleksi">Barang Koleksi</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary" form="formEditLelang">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Script untuk toggle sidebar (contoh dari dokumentasi Bootstrap)
+        const sidebarToggle = document.body.querySelector('#sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', event => {
+                event.preventDefault();
+                document.body.classList.toggle('sb-sidenav-toggled'); // Anda perlu CSS untuk sb-sidenav-toggled atau gunakan struktur sidebar Bootstrap yang lebih lengkap
+                // Atau jika menggunakan struktur wrapper sederhana seperti di atas:
+                const sidebar = document.getElementById('sidebar-wrapper');
+                if (sidebar.style.marginLeft === '-280px') {
+                    sidebar.style.marginLeft = '0';
+                } else {
+                    sidebar.style.marginLeft = '-280px';
+                }
+            });
+        }
+
+        // Script untuk mengisi data ke modal edit (simulasi)
+        const editLelangModal = document.getElementById('editLelangModal');
+        editLelangModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget; // Tombol yang memicu modal
+            const lelangId = button.getAttribute('data-id'); // Ambil ID dari atribut data-id
+
+            // Simulasi ambil data dari backend berdasarkan lelangId
+            // Di sini Anda akan melakukan fetch ke API untuk mendapatkan detail lelang
+            if (lelangId === 'L001') {
+                document.getElementById('editLelangId').value = 'L001';
+                document.getElementById('editNamaProduk').value = 'Smartphone Canggih X100';
+                document.getElementById('editDeskripsiProduk').value = 'Deskripsi Smartphone Canggih X100...';
+                document.getElementById('editHargaAwal').value = 5000000;
+                document.getElementById('editKelipatanBid').value = 100000;
+                // Format datetime-local: YYYY-MM-DDThh:mm
+                document.getElementById('editWaktuMulai').value = '2025-05-18T10:00';
+                document.getElementById('editWaktuSelesai').value = '2025-05-25T22:00';
+                document.getElementById('editKategoriProduk').value = 'elektronik';
+                document.getElementById('currentImages').textContent = 'smartphone_x100_1.jpg, smartphone_x100_2.jpg';
+            }
+            // Tambahkan else if untuk ID lelang lain atau logika fetch data sebenarnya
+        });
+
+        // Handle submit form tambah lelang (perlu AJAX)
+        document.getElementById('formTambahLelang')?.addEventListener('submit', function(e){
+            e.preventDefault();
+            alert('Data lelang baru akan dikirim ke server!');
+            // Logika AJAX untuk mengirim data ke backend
+            // Tutup modal setelah sukses
+            var modal = bootstrap.Modal.getInstance(document.getElementById('tambahLelangModal'));
+            modal.hide();
+            // Refresh tabel atau tambahkan data baru ke tabel secara dinamis
+        });
+
+         // Handle submit form edit lelang (perlu AJAX)
+        document.getElementById('formEditLelang')?.addEventListener('submit', function(e){
+            e.preventDefault();
+            const lelangId = document.getElementById('editLelangId').value;
+            alert('Data lelang ID: ' + lelangId + ' akan diupdate!');
+            // Logika AJAX untuk mengirim data update ke backend
+            var modal = bootstrap.Modal.getInstance(document.getElementById('editLelangModal'));
+            modal.hide();
+            // Refresh tabel atau update data di tabel secara dinamis
+        });
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchlist Saya - Auctify</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .btn-watchlist.active .bi-heart { display: none; }
+        .btn-watchlist.active .bi-heart-fill { display: inline-block; }
+        .btn-watchlist .bi-heart-fill { display: none; }
+        .card-img-top { width: 100%; height: 220px; object-fit: cover; }
+        .card { display: flex; flex-direction: column; justify-content: space-between; }
+        .card-body { flex-grow: 1; }
+        .dropdown-menu-notification { min-width: 300px; max-height: 400px; overflow-y: auto; }
+        .dropdown-menu-notification .dropdown-item { white-space: normal; padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .notification-time { font-size: 0.75em; color: #6c757d; }
+        .footer-links a { margin-right: 15px; color: #6c757d; text-decoration: none; }
+        .footer-links a:hover { color: #000; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="halaman_lelang_user.html">Auctify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="halaman_lelang_user.html">Lelang</a></li>
+                    <li class="nav-item"><a class="nav-link" href="riwayat_lelang_user.html">Riwayat Lelang</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="watchlist.html"><i class="bi bi-bookmark-heart-fill"></i> Watchlist</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown"><i class="bi bi-bell-fill"></i><span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle" style="font-size: 0.6em; margin-top: 0.5rem; margin-left: -0.5rem;">3</span></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-notification" aria-labelledby="notificationDropdown">
+                            <li><h6 class="dropdown-header">Notifikasi</h6></li>
+                            <li><a class="dropdown-item" href="#"><div><strong>Tawaran dikalahkan!</strong>...<div class="notification-time">5m lalu</div></div></a></li>
+                            <li><hr class="dropdown-divider"></li><li><a class="dropdown-item text-center" href="#">Lihat semua notifikasi</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"><i class="bi bi-person-circle"></i> User XYZ</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Profil</a></li><li><a class="dropdown-item" href="#">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-bookmark-heart-fill"></i> Watchlist Saya</h1>
+            <button class="btn btn-sm btn-outline-danger" id="clearWatchlistBtn"><i class="bi bi-trash3-fill"></i> Kosongkan Watchlist</button>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" id="watchlistContainer">
+            </div>
+    </div>
+
+    <footer class="bg-light text-lg-start pt-4 pb-2 mt-5">
+        <div class="container">
+            <div class="row footer-links mb-3 text-center text-md-start">
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Tentang Auctify</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Hubungi Kami</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Bantuan & FAQ</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Syarat & Ketentuan</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2"><a href="#">Kebijakan Privasi</a></div>
+                <div class="col-lg-2 col-md-4 col-6 mb-2">
+                    <a href="#" class="me-2"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="me-2"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#"><i class="bi bi-instagram"></i></a>
+                </div>
+            </div>
+            <hr>
+            <p class="mb-0 text-center small">&copy; 2025 Auctify. Semua Hak Dilindungi.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // (JavaScript untuk watchlist sama seperti sebelumnya)
+        const produkLelangGlobal = [ /* ... (Array produkLelangGlobal sama seperti di halaman_lelang_user.html) ... */ 
+            { id: 'iphone15', nama: 'iPhone 15 Pro Max 256GB', kategori: 'elektronik', deskripsi: 'Natural Titanium, baru, garansi resmi. Chip A17 Bionic.', hargaMulai: 20000000, hargaSaatIni: 21500000, kelipatanBid: 100000, sisaWaktuTeks: '0h 10m 05s', sisaWaktuNumerik: 605, gambarCard: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1692845699230', gambarModal: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium?wid=1200&hei=630&fmt=jpeg&qlt=95&.v=1692845699230', hargaBeli: 25000000, riwayat: [{user: 'UserX', bid: 21500000}, {user: 'UserY', bid: 21400000}], tags: ['hot', 'segera-berakhir'], userBidStatus: 'winning' },
+            { id: 'laptopAsusROG', nama: 'Laptop Gaming ASUS ROG Zephyrus G14', kategori: 'elektronik', deskripsi: 'AMD Ryzen 9, RTX 4060, 16GB RAM, 1TB SSD. Layar Nebula QHD 165Hz.', hargaMulai: 22000000, hargaSaatIni: 23500000, kelipatanBid: 250000, sisaWaktuTeks: '3h 45m 20s', sisaWaktuNumerik: 13520, gambarCard: 'https://dlcdnwebimgs.asus.com/gain/cf569226-06a8-4164-9926-e829900a3640/w717/h525', gambarModal: 'https://dlcdnwebimgs.asus.com/gain/cf569226-06a8-4164-9926-e829900a3640/w800', hargaBeli: null, riwayat: [{user: 'GamerPro', bid: 23500000}, {user: 'TechEnth', bid: 23250000}], userBidStatus: null },
+            { id: 'sonyAlpha7C', nama: 'Kamera Sony Alpha 7C (Body) Silver', kategori: 'elektronik', deskripsi: 'Full-frame compact, mulus, SC rendah. Cocok untuk vlogging.', hargaMulai: 18000000, hargaSaatIni: 19200000, kelipatanBid: 100000, sisaWaktuTeks: '0h 20m 00s', sisaWaktuNumerik: 1200, gambarCard: 'https://www.sony.co.id/image/5dd6924540301966abb9037148318196?fmt=pjpeg&wid=330&bgcolor=FFFFFF&bgc=FFFFFF', gambarModal: 'https://www.sony.co.id/image/5dd6924540301966abb9037148318196?fmt=pjpeg&wid=660&bgcolor=FFFFFF&bgc=FFFFFF', hargaBeli: 20500000, riwayat: [{user: 'VloggerX', bid: 19200000}], tags: ['segera-berakhir'], userBidStatus: 'outbid'},
+            { id: 'dompetGucci', nama: 'Dompet Gucci Marmont Card Case (Preloved)', kategori: 'fashion', deskripsi: 'Kulit matelassé hitam, hardware GG gold. Kondisi sangat baik, ada box.', hargaMulai: 3500000, hargaSaatIni: 4200000, kelipatanBid: 100000, sisaWaktuTeks: '2d 5h 15m 00s', sisaWaktuNumerik: 191700, gambarCard: 'https://media.gucci.com/style/DarkGray_Center_0_0_800x800/1677524430/443127_DTD1T_1000_001_083_0000_Light-GG-Marmont-card-case.jpg', gambarModal: 'https://media.gucci.com/style/DarkGray_Center_0_0_1200x1200/1677524430/443127_DTD1T_1000_001_083_0000_Light-GG-Marmont-card-case.jpg', hargaBeli: null, riwayat: [{user: 'Fashionista', bid: 4200000}], userBidStatus: null},
+            { id: 'sneakersNikeDunk', nama: 'Nike Dunk Low Retro "Panda"', kategori: 'fashion', deskripsi: 'Size US 10 / EUR 44. Baru, original, box (BNIB). Populer.', hargaMulai: 1800000, hargaSaatIni: 2150000, kelipatanBid: 50000, sisaWaktuTeks: '1d 12h 30m 00s', sisaWaktuNumerik: 131400, gambarCard: 'https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/50248639-65aa-4904-9496-61130ac056c5/dunk-low-retro-shoe-66RGqF.png', gambarModal: 'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/50248639-65aa-4904-9496-61130ac056c5/dunk-low-retro-shoe-66RGqF.png', hargaBeli: 2500000, riwayat: [{user: 'SneakerFan', bid: 2150000}], userBidStatus: 'winning' },
+            { id: 'perangkoHindiaBelanda', nama: 'Set Perangko Hindia Belanda Era 1930an', kategori: 'koleksi', deskripsi: 'Koleksi 10 perangko langka kondisi baik. Bernilai sejarah tinggi.', hargaMulai: 750000, hargaSaatIni: 950000, kelipatanBid: 25000, sisaWaktuTeks: '5h 02m 10s', sisaWaktuNumerik: 18130, gambarCard: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/COLLECTIE_TROPENMUSEUM_Postzegels_van_Nederlands_Indi%C3%AB_TMnr_A-6815b.jpg/800px-COLLECTIE_TROPENMUSEUM_Postzegels_van_Nederlands_Indi%C3%AB_TMnr_A-6815b.jpg', gambarModal: 'https://upload.wikimedia.org/wikipedia/commons/a/a6/COLLECTIE_TROPENMUSEUM_Postzegels_van_Nederlands_Indi%C3%AB_TMnr_A-6815b.jpg', hargaBeli: null, riwayat: [{user: 'FilatelisMania', bid: 950000}], userBidStatus: null},
+            { id: 'actionFigureGundam', nama: 'Action Figure Gundam MG Barbatos', kategori: 'koleksi', deskripsi: 'Master Grade 1/100, MISB. Detail artikulasi tinggi.', hargaMulai: 800000, hargaSaatIni: 950000, kelipatanBid: 50000, sisaWaktuTeks: '3d 08h 00m 00s', sisaWaktuNumerik: 288000, gambarCard: 'https://www.gundamplanet.com/media/catalog/product/cache/c8f890c63f3ac772e02237afea30d5a3/m/g/mg-barbatos-00.jpg', gambarModal: 'https://www.gundamplanet.com/media/catalog/product/cache/c8f890c63f3ac772e02237afea30d5a3/m/g/mg-barbatos-00.jpg', hargaBeli: 1200000, riwayat: [{user: 'GunplaBuilder', bid: 950000}], userBidStatus: 'outbid'},
+            { id: 'motorHondaCB', nama: 'Motor Klasik Honda CB100 K2 (Restorasi)', kategori: 'otomotif', deskripsi: 'Tahun 1978, full restorasi, cat baru, mesin ori. Surat lengkap.', hargaMulai: 15000000, hargaSaatIni: 17500000, kelipatanBid: 250000, sisaWaktuTeks: '4d 10h 00m 00s', sisaWaktuNumerik: 381600, gambarCard: 'https://id-test-11.slatic.net/p/5778a910d73405f829a246282635872e.jpg_720x720q80.jpg_.webp', gambarModal: 'https://id-test-11.slatic.net/p/5778a910d73405f829a246282635872e.jpg_720x720q80.jpg_.webp', hargaBeli: null, riwayat: [{user: 'ClassicMotor', bid: 17500000}], userBidStatus: null},
+            { id: 'sofaChesterfield', nama: 'Sofa Chesterfield Kulit Coklat Tua', kategori: 'furnitur', deskripsi: '3 Seater, kulit asli, kancing khas. Mewah dan klasik. Dimensi 200x90x75 cm.', hargaMulai: 12000000, hargaSaatIni: 13500000, kelipatanBid: 200000, sisaWaktuTeks: '2d 02h 30m', sisaWaktuNumerik: 181800, gambarCard: 'https://www.ikea.co.id/dairyfarm/id/images/068/0706869_PE725974_S5.jpg', gambarModal: 'https://www.ikea.co.id/dairyfarm/id/images/068/0706869_PE725974_S5.jpg', hargaBeli: 15000000, riwayat: [{user: 'InteriorLux', bid: 13500000}], userBidStatus: null},
+            { id: 'mejaKerjaScandinavian', nama: 'Meja Kerja Scandinavian Kayu Pinus', kategori: 'furnitur', deskripsi: 'Desain minimalis, laci penyimpanan. Ukuran 100x50x75cm.', hargaMulai: 800000, hargaSaatIni: 950000, kelipatanBid: 50000, sisaWaktuTeks: '1d 18h 00m', sisaWaktuNumerik: 151200, gambarCard: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//100/MTA-41094933/φηラルfabelio_fabelio_meja_kerja_minimalis_-_meja_belajar_-_meja_kantor_full01.jpg', gambarModal: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//100/MTA-41094933/φηラルfabelio_fabelio_meja_kerja_minimalis_-_meja_belajar_-_meja_kantor_full01.jpg', hargaBeli: null, riwayat: [{user: 'WorkFromHome', bid: 950000}], userBidStatus: null},
+            { id: 'lampuMejaLED', nama: 'Lampu Meja Belajar LED Minimalis', kategori: 'furnitur', deskripsi: 'Desain modern, leher fleksibel, 3 tingkat kecerahan. Hemat energi.', hargaMulai: 150000, hargaSaatIni: 180000, kelipatanBid: 10000, sisaWaktuTeks: '0d 18h 30m', sisaWaktuNumerik: 66600, gambarCard: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/2/f8a2a4b8-f08e-4c64-8a0a-71f82c04261b.jpg', gambarModal: 'https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/2/f8a2a4b8-f08e-4c64-8a0a-71f82c04261b.jpg', hargaBeli: 250000, riwayat: [{user: 'PelajarTekun', bid: 180000}], tags: ['segera-berakhir'], userBidStatus: 'winning' }
+        ];
+
+        function formatRupiah(angka, prefix = 'Rp ') { /* ... (sama) ... */ 
+            if (typeof angka !== 'number' || isNaN(angka)) return prefix + '0';
+            return prefix + angka.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        function getWatchlistIds() { /* ... (sama) ... */ 
+            const watchlist = localStorage.getItem('lelangWatchlist');
+            return watchlist ? JSON.parse(watchlist) : [];
+        }
+        function removeFromWatchlistStorage(produkId) { /* ... (sama) ... */ 
+            let watchlist = getWatchlistIds();
+            watchlist = watchlist.filter(id => id !== produkId);
+            localStorage.setItem('lelangWatchlist', JSON.stringify(watchlist));
+        }
+        
+        function renderWatchlistItems() {
+            const watchlistContainer = document.getElementById('watchlistContainer');
+            watchlistContainer.innerHTML = ''; 
+            const watchlistIds = getWatchlistIds();
+            if (watchlistIds.length === 0) {
+                watchlistContainer.innerHTML = '<p class="text-center col-12">Watchlist Anda masih kosong. Tandai item lelang yang Anda minati!</p>';
+                return;
+            }
+            const watchlistedProduk = produkLelangGlobal.filter(p => watchlistIds.includes(p.id));
+            watchlistedProduk.forEach(produk => {
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.dataset.id = produk.id;
+                col.innerHTML = `
+                    <div class="card h-100 shadow-sm">
+                        <img src="${produk.gambarCard || 'https://via.placeholder.com/300x220.png?text=Gambar+Tidak+Tersedia'}" class="card-img-top" alt="${produk.nama}">
+                        <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 btn-remove-watchlist" title="Hapus dari Watchlist" data-produk-id="${produk.id}">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${produk.nama}</h5>
+                            <p class="card-text small">${produk.deskripsi.substring(0,70)}...</p>
+                            <p class="card-text mt-auto"><strong>Harga Saat Ini:</strong> <span class="text-success fw-bold">${formatRupiah(produk.hargaSaatIni)}</span></p>
+                            <p class="card-text"><small class="text-muted">Sisa Waktu: <span class="text-danger fw-bold">${produk.sisaWaktuTeks || 'N/A'}</span></small></p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="halaman_lelang_user.html#${produk.id}" class="btn btn-primary w-100 mb-1">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                `;
+                watchlistContainer.appendChild(col);
+            });
+            document.querySelectorAll('.btn-remove-watchlist').forEach(button => {
+                button.addEventListener('click', function() {
+                    const produkIdToRemove = this.dataset.produkId;
+                    removeFromWatchlistStorage(produkIdToRemove);
+                    renderWatchlistItems(); 
+                });
+            });
+        }
+        const clearWatchlistBtn = document.getElementById('clearWatchlistBtn');
+        if (clearWatchlistBtn) {
+            clearWatchlistBtn.addEventListener('click', () => {
+                if (confirm('Anda yakin ingin mengosongkan semua item di watchlist?')) {
+                    localStorage.removeItem('lelangWatchlist');
+                    renderWatchlistItems();
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', renderWatchlistItems);
+    </script>
+</body>
+</html>
